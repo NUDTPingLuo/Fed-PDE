@@ -1,9 +1,7 @@
-"""Portable Nature-leaning styling, fixed-size export and layout checks."""
+"""Plot styling, export and layout checks."""
 from __future__ import annotations
 
-import importlib.util
 import json
-import shutil
 from pathlib import Path
 
 import matplotlib as mpl
@@ -75,7 +73,7 @@ def alpha_legend(fig, alphas, *, iid: bool = False, markers_only: bool = False) 
         handles.append(Line2D([], [], color=IID_COLOR, marker="o", markerfacecolor="white", label="Stratified IID"))
     handles.extend(Line2D([], [], color=ALPHA_COLORS[a], marker=ALPHA_MARKERS[a],
                           linestyle="none" if markers_only else ALPHA_LINES[a],
-                          markerfacecolor="white", markersize=4, label=f"α = {a:g}") for a in alphas)
+                          markerfacecolor="white", markersize=4, label=f"伪 = {a:g}") for a in alphas)
     fig.legend(handles=handles, loc="upper center", bbox_to_anchor=(0.54, 0.997), ncol=len(handles),
                frameon=False, columnspacing=1.5, handlelength=1.8, handletextpad=0.45)
 
@@ -130,29 +128,18 @@ def require_basic_alignment(fig, axes, path: Path, *, alignment_options=None) ->
 
 
 class Exporter:
-    def __init__(self, output: Path, *, svg: bool = False, previews: bool = False, qa_tools: Path | None = None):
+    def __init__(self, output: Path, *, svg: bool = False, previews: bool = False):
         self.output, self.svg, self.previews = output, svg, previews
         self.qa = output / "qa"
         self.qa.mkdir(parents=True, exist_ok=True)
         self.figures = []
-        self.require_matplotlib_panel_alignment = None
-        if qa_tools:
-            spec = importlib.util.spec_from_file_location("audit_panel_alignment", qa_tools / "audit_panel_alignment.py")
-            module = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(module)
-            self.require_matplotlib_panel_alignment = module.require_matplotlib_panel_alignment
 
     def save(self, fig, name: str, claim: str, caption: str, experiments, *, exclude_axes=(),
-             require_panel_labels=True, alignment_options=None) -> Path:
+             alignment_options=None) -> Path:
         axes = [a for a in fig.axes if a not in exclude_axes]
         require_panel_label_clearance(fig, axes)
         require_basic_alignment(fig, axes, self.qa / f"{name}.layout.json",
                                 alignment_options=alignment_options)
-        if self.require_matplotlib_panel_alignment:
-            self.require_matplotlib_panel_alignment(
-                fig, axes=axes, json_out=self.qa / f"{name}.alignment.json",
-                tolerance_pt=1.5, gutter_tolerance_pt=1.5,
-                require_panel_labels=require_panel_labels, strict=True, **(alignment_options or {}))
         fig.canvas.draw()
         renderer = fig.canvas.get_renderer()
         width, height = fig.canvas.get_width_height()
@@ -182,8 +169,3 @@ class Exporter:
         print(f"Saved {pdf}")
         return pdf
 
-    def sync_nc(self, destination: Path) -> None:
-        destination.mkdir(parents=True, exist_ok=True)
-        for figure in self.figures:
-            name = figure["name"] + ".pdf"
-            shutil.copy2(self.output / name, destination / name)

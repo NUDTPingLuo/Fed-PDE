@@ -1,14 +1,8 @@
-"""Reconstruct fixed formal-training examples and export task thumbnails.
-
-No training is performed. Metadata, seed rule and numerical solver are those of
-the formal experiments. Burgers must be solved as the original complete batch:
-its shared CFL time step depends on the maximum speed across the whole pool.
-"""
+"""Reconstruct controlled training samples using the recorded seeds and solver batches."""
 import argparse
 import hashlib
 import json
 from pathlib import Path
-import sys
 
 import numpy as np
 import matplotlib
@@ -140,8 +134,6 @@ def main():
     parser.add_argument('--sample-index', type=int, default=0)
     parser.add_argument('--output-dir', type=Path,
                         default=ROOT / 'output' / 'training_sample_thumbnails')
-    parser.add_argument('--qa-tools', type=Path,
-                        default=None, help='Optional directory containing audit_panel_alignment.py')
     args = parser.parse_args()
     output = args.output_dir.resolve()
     for child in ('source_data', 'qa'):
@@ -161,12 +153,6 @@ def main():
     from util.paper_figure_style import require_basic_alignment
     require_basic_alignment(fig, axes, output / 'qa' / 'overview.alignment.json',
                             alignment_options={'row_groups': [['a', 'b', 'c']]})
-    if args.qa_tools is not None:
-        sys.path.insert(0, str(args.qa_tools))
-        from audit_panel_alignment import require_matplotlib_panel_alignment
-        require_matplotlib_panel_alignment(
-            fig, axes=axes, panel_ids=['a', 'b', 'c'], row_groups=[['a', 'b', 'c']],
-            json_out=output / 'qa' / 'overview.external_alignment.json', strict=True)
     export(fig, output / 'overview')
     provenance = dict(
         selection='Fixed index chosen before viewing; one example per training pool.',

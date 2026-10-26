@@ -1,8 +1,10 @@
 cff-version: 1.2.0
-message: "If you use this software, please cite this repository and the archived version when its DOI is available."
+message: "If you use this software, please cite the archived release."
 type: software
 title: "Fed-PDE: solution-space heterogeneity in federated PDE learning"
 version: "1.0.0"
+doi: "10.5281/zenodo.23662112"
+date-released: "2026-10-26"
 license: MIT
 repository-code: "https://github.com/NUDTPingLuo/Fed-PDE"
 url: "https://github.com/NUDTPingLuo/Fed-PDE"

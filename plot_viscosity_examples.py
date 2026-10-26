@@ -1,11 +1,4 @@
-"""Viscosity figure: matched training fields above paired and absolute errors.
-
-Contract: show how lower viscosity changes a fixed training response alongside
-baseline difficulty and non-IID cost. Image plate + quantitative grid, Python,
-183 x 142 mm. Four heatmaps share the same initial condition and colour limits;
-they are illustrative references, while both statistics panels retain five-seed
-pointwise Student-t intervals. No observations or uncertainty are removed.
-"""
+"""Plot matched Burgers responses and errors across viscosities."""
 import hashlib
 import json
 from pathlib import Path
@@ -140,7 +133,7 @@ def plot_viscosity_figure(experiments, exporter):
         'for all four concentrations. c, Original absolute IID and α=0.01 errors. '
         'Means and pointwise 95% Student-t intervals use five seeds. '
         'Viscosities are categorical; ν=0.1 reuses the formal control. Round 1000, ten clients.',
-        experiments,exclude_axes=[cax],require_panel_labels=False,
+        experiments,exclude_axes=[cax],
         alignment_options=dict(row_groups=[[ax.get_gid() for ax in heatmaps],['b','c']]))
 
 
@@ -148,8 +141,6 @@ def export_viscosity_bundle(experiments,args):
     if len(experiments)!=4 or any(len(e.seeds)!=5 for e in experiments):
         raise ValueError('Expected four viscosity settings with five seeds each.')
     source=export_source_data(experiments,args.output_dir/'source_data',args.results_root)
-    exporter=Exporter(args.output_dir,svg=args.svg,previews=args.previews,qa_tools=args.qa_tools_dir)
+    exporter=Exporter(args.output_dir,svg=args.svg,previews=args.previews)
     plot_viscosity_figure(experiments,exporter)
     (args.output_dir/'figure_manifest.json').write_text(json.dumps(dict(source,figures=exporter.figures),indent=2),encoding='utf-8')
-    if args.sync_nc:
-        exporter.sync_nc(ROOT/'latex/Fed_PDE_NC/figures')

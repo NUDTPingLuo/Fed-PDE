@@ -1,15 +1,6 @@
-"""Three-row controlled-task figure: own training sample, learning curve, paired effect.
-
-Contract: identify each operator, then show convergence and the same-seed late
-effect. Image plate + quantitative grid, 183 x 168 mm, native Python vectors and
-raw reference heatmaps, unchanged five-seed mean / Student-t 95% CI. Row letters
-a/b/c identify entire tasks. Narrow sample axes intentionally reserve space for
-colorbars; learning/effect axes share widths. QA compares every adjacent pair's
-row edges and all three columns, excluding auxiliary colorbar axes.
-"""
+"""Plot controlled training samples beside learning curves and paired effects."""
 from pathlib import Path
 import json
-import shutil
 
 import matplotlib.pyplot as plt
 from matplotlib.colors import TwoSlopeNorm
@@ -107,26 +98,17 @@ def plot_formal_curves(experiments, exporter, name):
                   'non-IID minus IID error at rounds 200, 500 and 1000, in percentage points. '
                   'All original observations and uncertainty are retained; round 0 is kept '
                   'in source data but cannot appear on a log axis. ' + STATS_NOTE,
-                  experiments, exclude_axes=excluded, require_panel_labels=False,
+                  experiments, exclude_axes=excluded,
                   alignment_options=dict(row_groups=rows, column_groups=columns))
 
 
-def sync_sample_assets(destination):
-    destination.mkdir(parents=True, exist_ok=True)
-    for task in FORMAL_ORDER:
-        for ext in ('pdf', 'png', 'svg'):
-            shutil.copy2(SAMPLES / f'{task}.{ext}', destination / f'training_sample_{task}.{ext}')
 
 
 def export_formal_bundle(experiments, args):
     if any(len(e.seeds) != 5 for e in experiments):
         raise ValueError('Expected five seeds in every formal experiment.')
     source = export_source_data(experiments, args.output_dir / 'source_data', args.results_root)
-    exporter = Exporter(args.output_dir, svg=args.svg, previews=args.previews, qa_tools=args.qa_tools_dir)
+    exporter = Exporter(args.output_dir, svg=args.svg, previews=args.previews)
     plot_formal_curves(experiments, exporter, 'formal_test_error_curves')
     (args.output_dir / 'figure_manifest.json').write_text(
         json.dumps(dict(source, figures=exporter.figures), indent=2), encoding='utf-8')
-    if args.sync_nc:
-        destination = ROOT / 'latex/Fed_PDE_NC/figures'
-        exporter.sync_nc(destination)
-        sync_sample_assets(destination)

@@ -1,8 +1,4 @@
-"""Publication figures for the completed Adam/cosine SB-CFO experiments.
-
-Run: python plot_sb_cfo_figures.py --previews
-Only reads experiment results; never trains, changes results, or selects checkpoints.
-"""
+"""Plot paired FedAvg/SB-CFO results and resource costs."""
 from __future__ import annotations
 
 import argparse
@@ -221,14 +217,12 @@ def main():
     parser.add_argument("--output-dir", type=Path, default=ROOT / "output/pdf/sb_cfo")
     parser.add_argument("--previews", action="store_true")
     parser.add_argument("--svg", action="store_true")
-    parser.add_argument("--qa-tools-dir", type=Path, help="Optional Nature figure audit scripts directory")
-    parser.add_argument("--sync-nc", action="store_true", help="Copy only these two PDFs to NC figures")
     args = parser.parse_args()
     if (ROOT / "results").resolve() in [args.output_dir.resolve(), *args.output_dir.resolve().parents]:
         parser.error("Keep generated figures outside the raw results tree")
     studies = load_studies(args.results_root)
     configure_matplotlib()
-    exporter = Exporter(args.output_dir, svg=args.svg, previews=args.previews, qa_tools=args.qa_tools_dir)
+    exporter = Exporter(args.output_dir, svg=args.svg, previews=args.previews)
     main_figure(studies, exporter)
     diagnostic_figure(studies, exporter)
     source_data(studies, args.output_dir)
@@ -242,23 +236,6 @@ def main():
     (args.output_dir / "figure_captions.md").write_text(
         "# SB-CFO figure legends\n\n" + "\n\n".join("## " + f["name"] + "\n\n" + f["caption"]
                                                      for f in exporter.figures) + "\n", encoding="utf-8")
-    if args.sync_nc:
-        exporter.sync_nc(ROOT / "latex/Fed_PDE_NC/figures")
-    # The static auditor cannot follow imported style/export functions.
-    sources = [ROOT / "util/paper_figure_style.py", ROOT / "util/sb_cfo_figure_data.py",
-               Path(__file__).resolve()]
-    snapshot = "\n\n".join(p.read_text(encoding="utf-8").replace(
-        "from __future__ import annotations", "") for p in sources)
-    (exporter.qa / "plot_source_snapshot.py").write_text(
-        "from __future__ import annotations\n" + snapshot, encoding="utf-8")
-    # The static auditor cannot follow imported style/export functions. Supply
-    # their exact source alongside the entry point, without duplicating logic.
-    sources = [ROOT / "util/paper_figure_style.py", ROOT / "util/sb_cfo_figure_data.py",
-               Path(__file__).resolve()]
-    snapshot = "\n\n".join(p.read_text(encoding="utf-8").replace(
-        "from __future__ import annotations", "") for p in sources)
-    (exporter.qa / "plot_source_snapshot.py").write_text(
-        "from __future__ import annotations\n" + snapshot, encoding="utf-8")
 
 
 if __name__ == "__main__":

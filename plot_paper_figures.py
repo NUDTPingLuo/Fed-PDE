@@ -1,9 +1,4 @@
-"""Generate Nature-leaning manuscript PDFs from completed FL-PDE results.
-
-No training, resampling, smoothing, result modification or test-set model
-selection is performed. Existing manuscript PDF names are preserved.
-Run: python plot_paper_figures.py --sync-nc
-"""
+"""Plot benchmark results, paired effects and diagnostics."""
 from __future__ import annotations
 
 import argparse
@@ -429,10 +424,8 @@ def parse_args():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--results-root", type=Path, default=PROJECT_ROOT / "results")
     parser.add_argument("--output-dir", type=Path, default=PROJECT_ROOT / "output/pdf")
-    parser.add_argument("--sync-nc", action="store_true", help="Copy the generated PDFs to the NC figures directory only")
     parser.add_argument("--svg", action="store_true", help="Also export editable SVG")
     parser.add_argument("--previews", action="store_true", help="Write PNG previews under output/qa, never into training results")
-    parser.add_argument("--qa-tools-dir", type=Path, help="Optional directory containing the Nature figure alignment audit")
     parser.add_argument("--only-formal-curves", action="store_true",
                         help="Regenerate only controlled-task curves with training-sample panels")
     parser.add_argument("--only-public-curves", action="store_true",
@@ -472,13 +465,7 @@ def main():
     args.output_dir.mkdir(parents=True, exist_ok=True)
     print(f"Validated {len(experiments)} completed experiments; preserving all original result files.")
     source = export_source_data(experiments, args.output_dir / "source_data", args.results_root)
-    exporter = Exporter(args.output_dir, svg=args.svg, previews=args.previews, qa_tools=args.qa_tools_dir)
-    # The source preflight is regex/AST-based and cannot follow imported style
-    # modules. Supply a combined, syntax-valid QA-only source snapshot.
-    modules = (PROJECT_ROOT / "util/paper_figure_data.py", PROJECT_ROOT / "util/paper_figure_style.py", Path(__file__))
-    snapshot = "from __future__ import annotations\n" + "\n".join(
-        p.read_text(encoding="utf-8").replace("from __future__ import annotations\n", "") for p in modules)
-    (exporter.qa / "plotting_source_preflight.py").write_text(snapshot, encoding="utf-8")
+    exporter = Exporter(args.output_dir, svg=args.svg, previews=args.previews)
     for suite, selected in (("formal", formal), ("public", public)):
         plot_error_curves(selected, exporter, f"{suite}_test_error_curves")
         plot_drift_curves(selected, exporter, f"{suite}_drift_curves")
@@ -504,13 +491,6 @@ def main():
     captions = "# Figure captions and statistical conventions\n\n" + "\n\n".join(
         f"## {f['name']}\n\n{f['caption']}" for f in exporter.figures)
     (args.output_dir / "figure_captions.md").write_text(captions+"\n", encoding="utf-8")
-    if args.sync_nc:
-        exporter.sync_nc(PROJECT_ROOT / "latex/Fed_PDE_NC/figures")
-        from plot_formal_training_examples import sync_sample_assets
-        sync_sample_assets(PROJECT_ROOT / "latex/Fed_PDE_NC/figures")
-        from plot_public_training_examples import sync_sample_assets as sync_public_samples
-        sync_public_samples(args.output_dir, PROJECT_ROOT / "latex/Fed_PDE_NC/figures")
-        print("Updated NC figure PDFs only; no IEEE manuscript or experiment results were changed.")
     print(f"Generated {len(exporter.figures)} PDFs, source data, captions and reproducibility manifest.")
 
 

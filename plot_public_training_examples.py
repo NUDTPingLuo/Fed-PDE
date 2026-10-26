@@ -1,15 +1,7 @@
-"""Public training examples + unchanged paired learning curves (Python).
-
-Contract: four task rows identify the physical target, show convergence, then
-resolve the paired late-training effect. Image plate + quantitative grid,
-183 x 218 mm; a-d label entire rows. Fixed first training sample, last configured
-target horizon, raw fields, no smoothing. Preserve cylinder spatial aspect ratio.
-All five seeds and pointwise Student-t 95% intervals remain in the curve panels.
-"""
+"""Plot public training samples beside learning curves and paired effects."""
 import hashlib
 import json
 from pathlib import Path
-import shutil
 
 import h5py
 import matplotlib.pyplot as plt
@@ -188,7 +180,7 @@ def plot_public_curves(experiments, exporter, name):
                   'horizon for time-dependent tasks. Cylinder shows speed magnitude with the solid in grey. '
                   'Middle: test error over communication rounds (log scale). Right: within-seed '
                   'non-IID minus IID error at rounds 200, 500 and 1000 (percentage points). '+STATS_NOTE,
-                  experiments,exclude_axes=excluded,require_panel_labels=False,
+                  experiments,exclude_axes=excluded,
                   alignment_options=dict(row_groups=rows,column_groups=columns,
                       exemptions=[dict(panels=columns[0],checks=['vertical-gutter'],
                           reason='Cylinder retains its physical aspect ratio, so sample-image vertical gutters intentionally differ; column edges/widths and all quantitative grids remain checked.')]))
@@ -206,20 +198,12 @@ def plot_public_curves(experiments, exporter, name):
         plt.close(fig)
 
 
-def sync_sample_assets(output,destination):
-    destination.mkdir(parents=True,exist_ok=True)
-    for task in PUBLIC_ORDER:
-        for ext in ('pdf','png','svg'):
-            shutil.copy2(output/f'training_sample_{task}.{ext}',destination/f'training_sample_{task}.{ext}')
 
 
 def export_public_bundle(experiments,args):
     if any(len(e.seeds)!=5 for e in experiments):
         raise ValueError('Expected five seeds.')
     source=export_source_data(experiments,args.output_dir/'source_data',args.results_root)
-    exporter=Exporter(args.output_dir,svg=args.svg,previews=args.previews,qa_tools=args.qa_tools_dir)
+    exporter=Exporter(args.output_dir,svg=args.svg,previews=args.previews)
     plot_public_curves(experiments,exporter,'public_test_error_curves')
     (args.output_dir/'figure_manifest.json').write_text(json.dumps(dict(source,figures=exporter.figures),indent=2),encoding='utf-8')
-    if args.sync_nc:
-        destination=ROOT/'latex/Fed_PDE_NC/figures'
-        exporter.sync_nc(destination);sync_sample_assets(args.output_dir,destination)

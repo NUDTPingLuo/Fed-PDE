@@ -1,11 +1,5 @@
-"""Read-only checks for the shared notation and geometric inequalities.
-
-Run from any directory with Python, NumPy and SciPy. These tests do not modify
-training results, manuscript sources or checkpoints.
-"""
-import argparse
+"""Check weighted centering, stratification, gradient and transport bounds."""
 import json
-from pathlib import Path
 
 import numpy as np
 from scipy.optimize import linprog
@@ -106,29 +100,7 @@ def geometry_checks():
     return checks
 
 
-def notation_checks(paper):
-    paper = Path(paper)
-    files = [paper/"sn-article.tex", paper/"Supplementary_Information.tex"]
-    for path in files:
-        text = path.read_text(encoding="utf-8")
-        assert r"\input{notation}" in text, path
-        assert r"\newcommand{\vect}" not in text, path
-    source = "\n".join(p.read_text(encoding="utf-8") for p in (paper/"sections").glob("*.tex"))
-    for old in (r"\vect{g}_b", r"\widehat{\vect{g}}", r"\vect{v}_k",
-                r"v_{kb}", r"\vect{S}", r"\vect{z}_{k,e}", r"\mat{P}_p"):
-        assert old not in source, old
-    for new in (r"F_b^{\mathrm{bin}}", r"\vect{\mu}_b", r"\vect{\omega}_k",
-                r"\widetilde{\vect{g}}_{k,e}", r"\vect{\chi}_t"):
-        assert new in source, new
-    return [dict(check="shared_notation_and_removed_collisions", passed=True)]
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--manuscript-dir', type=Path,
-                        help='Optional LaTeX directory for source-notation checks')
-    args = parser.parse_args()
-    report = geometry_checks()
-    if args.manuscript_dir is not None:
-        report += notation_checks(args.manuscript_dir)
-    print(json.dumps(report, indent=2))
+    print(json.dumps(geometry_checks(), indent=2))
