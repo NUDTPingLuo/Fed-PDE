@@ -38,3 +38,9 @@ examples. Preserve the annotated filenames when downloading OpenFWI arrays.
 
 The public split, preprocessing, temporal horizons and response-codebook seed
 are fixed by the YAML configurations. Large raw data are not included here.
+
+## Licensing
+
+The repository's MIT license covers the original code and accompanying materials.
+It does not relicense PDEBench, CFDBench or OpenFWI source datasets. Obtain those
+datasets from their providers and follow their respective access and license terms.

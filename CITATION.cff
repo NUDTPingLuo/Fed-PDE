@@ -1,0 +1,33 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite this repository and the archived version when its DOI is available."
+type: software
+title: "Fed-PDE: solution-space heterogeneity in federated PDE learning"
+version: "1.0.0"
+license: MIT
+repository-code: "https://github.com/NUDTPingLuo/Fed-PDE"
+url: "https://github.com/NUDTPingLuo/Fed-PDE"
+abstract: >-
+  Solution-space PDE-Dirichlet benchmarks, bin-conditioned federated gradient
+  correction (SB-CFO), numerical operator datasets, recorded seed-level results,
+  and reproducible analysis for seven controlled and public simulation tasks.
+authors:
+  - family-names: "Luo"
+    given-names: "Ping"
+    affiliation: "PDL Lab, College of Computer Science and Technology, National University of Defense Technology"
+  - family-names: "Wang"
+    given-names: "Jiahuan"
+    affiliation: "PDL Lab, College of Computer Science and Technology, National University of Defense Technology"
+  - family-names: "Wen"
+    given-names: "Ziqing"
+    affiliation: "PDL Lab, College of Computer Science and Technology, National University of Defense Technology"
+  - family-names: "Sun"
+    given-names: "Tao"
+    affiliation: "PDL Lab, College of Computer Science and Technology, National University of Defense Technology"
+  - family-names: "Li"
+    given-names: "Dongsheng"
+    affiliation: "PDL Lab, College of Computer Science and Technology, National University of Defense Technology"
+keywords:
+  - federated learning
+  - partial differential equations
+  - neural operators
+  - reproducibility

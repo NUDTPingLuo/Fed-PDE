@@ -1,0 +1,7 @@
+# Tested analysis environment: Python 3.12.14 on Windows.
+# These versions describe the current analysis check, not the original GPU training environment.
+numpy==2.5.4
+scipy==1.18.1
+matplotlib==3.11.2
+PyYAML==6.0.3
+h5py==3.16.0

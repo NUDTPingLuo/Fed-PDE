@@ -1,0 +1,44 @@
+{
+  "title": "Fed-PDE: solution-space heterogeneity in federated PDE learning",
+  "version": "1.0.0",
+  "upload_type": "software",
+  "access_right": "open",
+  "license": "mit",
+  "creators": [
+    {
+      "name": "Luo, Ping",
+      "affiliation": "PDL Lab, College of Computer Science and Technology, National University of Defense Technology"
+    },
+    {
+      "name": "Wang, Jiahuan",
+      "affiliation": "PDL Lab, College of Computer Science and Technology, National University of Defense Technology"
+    },
+    {
+      "name": "Wen, Ziqing",
+      "affiliation": "PDL Lab, College of Computer Science and Technology, National University of Defense Technology"
+    },
+    {
+      "name": "Sun, Tao",
+      "affiliation": "PDL Lab, College of Computer Science and Technology, National University of Defense Technology"
+    },
+    {
+      "name": "Li, Dongsheng",
+      "affiliation": "PDL Lab, College of Computer Science and Technology, National University of Defense Technology"
+    }
+  ],
+  "description": "Source code, experiment configurations, recorded seed-level results and analysis tools for solution-space heterogeneity in federated PDE learning and SB-CFO. The raw third-party datasets are obtained separately from their original providers.",
+  "keywords": [
+    "federated learning",
+    "partial differential equations",
+    "neural operators",
+    "SB-CFO",
+    "reproducibility"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/NUDTPingLuo/Fed-PDE",
+      "relation": "isSupplementTo",
+      "scheme": "url"
+    }
+  ]
+}
