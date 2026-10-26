@@ -1,0 +1,5 @@
+tasks:
+  darcy: config/real_darcy.yaml
+  shallow_water: config/real_shallow_water.yaml
+  cfd_cylinder: config/real_cfd_cylinder.yaml
+  openfwi: config/real_openfwi.yaml

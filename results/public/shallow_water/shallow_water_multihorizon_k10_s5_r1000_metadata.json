@@ -1,0 +1,142 @@
+{
+  "config": {
+    "task": "shallow_water",
+    "output_dir": "results/public/shallow_water",
+    "output_prefix": "shallow_water_multihorizon_k10_s5_r1000",
+    "model_name": "fno2d"
+  },
+  "benchmark": {
+    "complete": true,
+    "config": {
+      "task": "shallow_water",
+      "dataset": {
+        "type": "pdebench_shallow_water",
+        "path": "data/public/PDEBench/2D_rdb_NA_NA.h5",
+        "n_train": 800,
+        "n_test": 200,
+        "split_seed": 2026,
+        "spatial_stride": 1,
+        "input_time_indices": [
+          0
+        ],
+        "target_time_indices": [
+          25,
+          50,
+          75,
+          100
+        ]
+      },
+      "model": {
+        "type": "fno2d",
+        "width": 32,
+        "modes": 12,
+        "layers": 4
+      },
+      "partition": {
+        "n_bins": 10,
+        "alpha_values": [
+          10.0,
+          1.0,
+          0.1,
+          0.01
+        ],
+        "min_client_samples": 16,
+        "clustering_seed": 42,
+        "clustering_max_iter": 100,
+        "partition_seed_base": 30000
+      },
+      "federation": {
+        "n_clients": 10
+      },
+      "training": {
+        "device": "cuda:0",
+        "batch_size": 8,
+        "optimizer": "adam",
+        "lr": 0.001,
+        "lr_schedule": "cosine",
+        "min_lr": 0.0001,
+        "local_steps": 5,
+        "n_rounds": 1000
+      },
+      "evaluation": {
+        "seeds": [
+          0,
+          1,
+          42,
+          999,
+          2026
+        ],
+        "round_checkpoints": [
+          0,
+          1,
+          5,
+          10,
+          20,
+          50,
+          100,
+          200,
+          500,
+          1000
+        ]
+      },
+      "output": {
+        "dir": "results/public/shallow_water",
+        "prefix": "shallow_water_multihorizon_k10_s5_r1000"
+      }
+    },
+    "dataset": {
+      "dataset": "PDEBench 2D radial dam-break shallow water",
+      "operator": "state t[0] -> multihorizon states t[25, 50, 75, 100]",
+      "input_time_indices": [
+        0
+      ],
+      "target_time_indices": [
+        25,
+        50,
+        75,
+        100
+      ],
+      "available_trajectories": 1000,
+      "source_url": "https://doi.org/10.18419/darus-2986",
+      "recommended_model": "FNO2D"
+    },
+    "round_tracking": {
+      "round_checkpoints": [
+        0,
+        1,
+        5,
+        10,
+        20,
+        50,
+        100,
+        200,
+        500,
+        1000
+      ],
+      "seed_file": "<output_prefix>_alpha_round_seed_raw.csv",
+      "summary_policy": "round summaries are derived downstream from seed-level rows"
+    },
+    "iid_reference": {
+      "interpretation": "independent uniform-IID allocation, not a Dirichlet alpha; every solution bin and total client size are balanced up to unavoidable integer remainders",
+      "drift_definition": "FedAvg error at alpha minus same-seed FedAvg error at the uniform-IID reference"
+    },
+    "client_bin_counts": "exact client-by-solution-bin counts in seed-level results; rows are separated by '|' and columns by ';'",
+    "solution_binning": {
+      "bin_sizes": [
+        76,
+        87,
+        85,
+        91,
+        117,
+        48,
+        110,
+        77,
+        19,
+        90
+      ],
+      "response_normalizer": 118.66979115045454,
+      "quantization_error": 0.144444428312786,
+      "iterations": 8
+    }
+  }
+}

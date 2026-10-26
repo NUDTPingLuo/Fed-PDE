@@ -1,0 +1,30 @@
+# Dedicated paired comparison; existing benchmark configurations are unchanged.
+base_configs:
+  burgers: config/config_burgers.yaml
+  darcy: config/real_darcy.yaml
+viscosities: [0.005]
+alpha_values: [0.01]
+methods: [fedavg, sb_cfo]
+seeds: [0, 1, 42, 999, 2026]
+n_clients: 10
+n_bins: 10
+min_client_samples: 16
+training:
+  # Adam is the main comparison; --optimizer sgd selects the SGD ablation.
+  optimizer: adam
+  lr: 0.001
+  lr_schedule: cosine
+  min_lr: 0.0001
+  momentum: 0.0
+  local_steps: 5
+  n_rounds: 1000
+  device: auto
+  log_every: 10
+  participation_rate: 1.0
+control:
+  strength: 1.0
+  refresh_every: 1
+  # 0 = full local bin gradient. A positive cap is a stochastic approximation.
+  samples_per_client_bin: 0
+round_checkpoints: [0, 1, 5, 10, 20, 50, 100, 200, 500, 1000]
+output_dir: results/sb_cfo_cosine_lr0p001

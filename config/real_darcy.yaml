@@ -1,0 +1,20 @@
+task: darcy
+dataset:
+  type: pdebench_darcy
+  path: data/public/PDEBench/2D_DarcyFlow_beta0.01_Train.hdf5
+  n_train: 2000
+  n_test: 500
+  split_seed: 2026
+  spatial_stride: 2
+model: {type: fno2d, width: 32, modes: 12, layers: 4}
+partition:
+  n_bins: 10
+  alpha_values: [10.0, 1.0, 0.1, 0.01]
+  min_client_samples: 16
+  clustering_seed: 42
+  clustering_max_iter: 100
+  partition_seed_base: 30000
+federation: {n_clients: 10}
+training: {device: auto, batch_size: 16, optimizer: adam, lr: 0.001, lr_schedule: cosine, min_lr: 0.0001, local_steps: 5, n_rounds: 1000}
+evaluation: {seeds: [0, 1, 42, 999, 2026], round_checkpoints: [0, 1, 5, 10, 20, 50, 100, 200, 500, 1000]}
+output: {dir: results/public/darcy, prefix: darcy_beta0p01_k10_s5_r1000}

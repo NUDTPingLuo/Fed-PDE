@@ -1,0 +1,17 @@
+# Paper-scale viscous Burgers operator (Sec. 6.4/Table 4).
+experiment_profile: paper_scale
+task: burgers
+data: {n_sensors: 101, output_grid: 101, n_modes: 10, condition_scale: 1.0}
+physics: {viscosity: 0.1}
+benchmark:
+  n_bins: 10
+  sampling_pool_size: 800
+  alpha_values: [10.0, 1.0, 0.1, 0.01]
+  transport_samples: 100
+  partition: {min_client_samples: 16}
+model: {width: 64, depth: 2, activation: relu}
+federation: {n_clients: 10}
+training: {backend: torch, device: auto, batch_size: 16, mixed_precision: false, optimizer: adam, lr: 0.001, lr_schedule: cosine, min_lr: 0.0001, local_steps: 5, n_rounds: 1000}
+evaluation: {seeds: [0, 1, 42, 999, 2026], n_test: 500}
+seed_base: 42
+output: {dir: results/manual/burgers, prefix: paper_burgers_deeponet}

@@ -1,0 +1,203 @@
+{
+  "config": {
+    "experiment_profile": "paper_scale",
+    "task": "antiderivative",
+    "n_sensors": 100,
+    "output_grid": 100,
+    "n_modes": 10,
+    "condition_scale": 1.0,
+    "diffusion": 0.01,
+    "reaction": 0.01,
+    "viscosity": 0.1,
+    "n_bins": 10,
+    "sampling_pool_size": 1000,
+    "alpha_values": [
+      10.0,
+      1.0,
+      0.1,
+      0.01
+    ],
+    "transport_samples": 100,
+    "min_client_samples": 16,
+    "n_clients": 20,
+    "model_width": 40,
+    "model_depth": 2,
+    "model_activation": "relu",
+    "optimizer": "adam",
+    "momentum": 0.0,
+    "training_backend": "torch",
+    "training_device": "cuda:0",
+    "training_batch_size": 16,
+    "mixed_precision": false,
+    "lr": 0.001,
+    "lr_schedule": "cosine",
+    "min_lr": 0.0001,
+    "local_steps": 5,
+    "n_rounds": 1000,
+    "seeds": [
+      0,
+      1,
+      42,
+      999,
+      2026
+    ],
+    "round_checkpoints": [
+      0,
+      1,
+      5,
+      10,
+      20,
+      50,
+      100,
+      200,
+      500,
+      1000
+    ],
+    "n_test": 1000,
+    "seed_base": 42,
+    "output_dir": "results/ablation_clients/antiderivative",
+    "output_prefix": "antiderivative_clients_k20_s5_r1000",
+    "n_seeds": 5,
+    "resume": true,
+    "checkpoint": true
+  },
+  "benchmark": {
+    "protocol": {
+      "training_labels": "high-fidelity PDE responses for every training sample",
+      "continuous_to_discrete": "K-means++ on the complete normalized training solution set, fitted independently for each seed",
+      "bin_reuse": "one fixed set of bin labels per seed for every alpha",
+      "client_partition": "non-reference rows use independent per-bin symmetric Dirichlet allocation; all rows are exhaustive and strictly without replacement",
+      "quantity_heterogeneity": "induced by the same allocation; FedAvg uses realized sample-count weights",
+      "iid_reference": "an independent uniform-IID reference, not a Dirichlet alpha: every solution bin and the total sample count are balanced across clients up to unavoidable integer remainders",
+      "drift_definition": "FedAvg test relative-L2 error at alpha minus the same-seed FedAvg error under the uniform-IID partition",
+      "minimum_client_samples": 16,
+      "local_training": "5 shuffled mini-batch optimizer steps per client and communication round",
+      "reference_training": "one uniform-IID FedAvg model per seed, reused as the comparison reference for every non-IID alpha",
+      "seed_level_results": "Dirichlet rows are stored in <output_prefix>_alpha_seed_raw.csv",
+      "client_bin_counts": "exact client-by-solution-bin counts in seed-level results; rows are separated by '|' and columns by ';'",
+      "round_checkpoints": [
+        0,
+        1,
+        5,
+        10,
+        20,
+        50,
+        100,
+        200,
+        500,
+        1000
+      ],
+      "round_level_results": "Dirichlet checkpoints are stored in <output_prefix>_alpha_round_seed_raw.csv; the matched IID checkpoints are stored once in <output_prefix>_iid.csv"
+    },
+    "solution_binning": {
+      "0": {
+        "n_training_samples": 1000,
+        "n_bins": 10,
+        "bin_sizes": [
+          83,
+          82,
+          79,
+          124,
+          94,
+          144,
+          91,
+          119,
+          66,
+          118
+        ],
+        "response_normalizer": 3.95464957365169,
+        "quantization_error": 0.3140206846339377,
+        "iterations": 23
+      },
+      "1": {
+        "n_training_samples": 1000,
+        "n_bins": 10,
+        "bin_sizes": [
+          94,
+          109,
+          77,
+          100,
+          113,
+          161,
+          48,
+          109,
+          93,
+          96
+        ],
+        "response_normalizer": 3.8577668993155574,
+        "quantization_error": 0.3201040120722857,
+        "iterations": 50
+      },
+      "42": {
+        "n_training_samples": 1000,
+        "n_bins": 10,
+        "bin_sizes": [
+          123,
+          99,
+          97,
+          155,
+          31,
+          111,
+          114,
+          55,
+          58,
+          157
+        ],
+        "response_normalizer": 3.992928326524085,
+        "quantization_error": 0.3120279924573575,
+        "iterations": 34
+      },
+      "999": {
+        "n_training_samples": 1000,
+        "n_bins": 10,
+        "bin_sizes": [
+          120,
+          64,
+          114,
+          173,
+          119,
+          82,
+          40,
+          79,
+          101,
+          108
+        ],
+        "response_normalizer": 3.9077817898193485,
+        "quantization_error": 0.3127939343556611,
+        "iterations": 15
+      },
+      "2026": {
+        "n_training_samples": 1000,
+        "n_bins": 10,
+        "bin_sizes": [
+          112,
+          71,
+          103,
+          81,
+          62,
+          79,
+          94,
+          107,
+          140,
+          151
+        ],
+        "response_normalizer": 3.9955037375831943,
+        "quantization_error": 0.31170606061074385,
+        "iterations": 47
+      }
+    },
+    "complete": true,
+    "correlations": {
+      "solution_transport": {
+        "gradient_dissimilarity": 0.7089281326028776,
+        "iid_weight_divergence": 0.7038611649139735,
+        "non_iid_degradation": -0.08464894906248092
+      },
+      "input_w1": {
+        "gradient_dissimilarity": 0.7146494609093382,
+        "iid_weight_divergence": 0.7038629567068562,
+        "non_iid_degradation": -0.10083684677123464
+      }
+    }
+  }
+}

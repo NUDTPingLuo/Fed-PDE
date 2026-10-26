@@ -1,0 +1,124 @@
+{
+  "config": {
+    "task": "openfwi",
+    "output_dir": "results/public/openfwi",
+    "output_prefix": "openfwi_curvefault_b_k10_s5_r1000",
+    "model_name": "inversionnet_lite"
+  },
+  "benchmark": {
+    "complete": true,
+    "config": {
+      "task": "openfwi",
+      "dataset": {
+        "type": "openfwi",
+        "dataset_name": "OpenFWI CurveFault-B",
+        "data_root": "data/public/OpenFWI/CurveFault_B",
+        "train_annotation": "data/public/OpenFWI/curvefault_b_train.txt",
+        "test_annotation": "data/public/OpenFWI/curvefault_b_val.txt",
+        "n_train": 2000,
+        "n_test": 500,
+        "time_stride": 4,
+        "receiver_stride": 1
+      },
+      "model": {
+        "type": "inversionnet_lite",
+        "width": 24
+      },
+      "partition": {
+        "n_bins": 10,
+        "alpha_values": [
+          10.0,
+          1.0,
+          0.1,
+          0.01
+        ],
+        "min_client_samples": 16,
+        "clustering_seed": 42,
+        "clustering_max_iter": 100,
+        "partition_seed_base": 30000
+      },
+      "federation": {
+        "n_clients": 10
+      },
+      "training": {
+        "device": "cuda:0",
+        "batch_size": 8,
+        "optimizer": "adam",
+        "lr": 0.001,
+        "lr_schedule": "cosine",
+        "min_lr": 0.0001,
+        "local_steps": 5,
+        "n_rounds": 1000
+      },
+      "evaluation": {
+        "seeds": [
+          0,
+          1,
+          42,
+          999,
+          2026
+        ],
+        "round_checkpoints": [
+          0,
+          1,
+          5,
+          10,
+          20,
+          50,
+          100,
+          200,
+          500,
+          1000
+        ]
+      },
+      "output": {
+        "dir": "results/public/openfwi",
+        "prefix": "openfwi_curvefault_b_k10_s5_r1000"
+      }
+    },
+    "dataset": {
+      "dataset": "OpenFWI CurveFault-B",
+      "operator": "seismic shot gathers -> subsurface velocity map",
+      "source_url": "https://openfwi-lanl.github.io/docs/data.html",
+      "recommended_model": "InversionNetLite"
+    },
+    "round_tracking": {
+      "round_checkpoints": [
+        0,
+        1,
+        5,
+        10,
+        20,
+        50,
+        100,
+        200,
+        500,
+        1000
+      ],
+      "seed_file": "<output_prefix>_alpha_round_seed_raw.csv",
+      "summary_policy": "round summaries are derived downstream from seed-level rows"
+    },
+    "iid_reference": {
+      "interpretation": "independent uniform-IID allocation, not a Dirichlet alpha; every solution bin and total client size are balanced up to unavoidable integer remainders",
+      "drift_definition": "FedAvg error at alpha minus same-seed FedAvg error at the uniform-IID reference"
+    },
+    "client_bin_counts": "exact client-by-solution-bin counts in seed-level results; rows are separated by '|' and columns by ';'",
+    "solution_binning": {
+      "bin_sizes": [
+        159,
+        240,
+        234,
+        159,
+        227,
+        147,
+        181,
+        267,
+        196,
+        190
+      ],
+      "response_normalizer": 46.65107601864987,
+      "quantization_error": 0.826854462135569,
+      "iterations": 32
+    }
+  }
+}

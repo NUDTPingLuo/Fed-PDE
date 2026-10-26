@@ -1,0 +1,6 @@
+numpy
+scipy
+PyYAML
+torch>=2.0
+h5py>=3.8
+matplotlib>=3.7
