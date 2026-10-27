@@ -1,4 +1,4 @@
-"""Plot controlled training samples beside learning curves and paired effects."""
+"""Plot controlled training examples and learning curves."""
 from pathlib import Path
 import json
 

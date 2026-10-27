@@ -258,13 +258,14 @@ def _cylinder_case(case, subset):
 
 
 def _cylinder_mask(parameters, height, width):
+    # Native CFDBench arrays are [T, H, W]: rows are y, columns are x.
     x = np.linspace(
-        float(parameters['x_min']), float(parameters['x_max']), height,
+        float(parameters['x_min']), float(parameters['x_max']), width,
         dtype=np.float32)
     y = np.linspace(
-        float(parameters['y_min']), float(parameters['y_max']), width,
+        float(parameters['y_min']), float(parameters['y_max']), height,
         dtype=np.float32)
-    gx, gy = np.meshgrid(x, y, indexing='ij')
+    gx, gy = np.meshgrid(x, y, indexing='xy')
     radius = float(parameters['radius'])
     return ((gx ** 2 + gy ** 2) <= radius ** 2).astype(np.float32)
 

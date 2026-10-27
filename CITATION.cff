@@ -1,16 +1,13 @@
 cff-version: 1.2.0
-message: "If you use this software, please cite the archived release."
+message: "If you use this software, cite this repository and the exact Git commit."
 type: software
 title: "Fed-PDE: solution-space heterogeneity in federated PDE learning"
-version: "1.0.0"
-doi: "10.5281/zenodo.23662112"
-date-released: "2026-10-26"
 license: MIT
 repository-code: "https://github.com/NUDTPingLuo/Fed-PDE"
 url: "https://github.com/NUDTPingLuo/Fed-PDE"
 abstract: >-
   Solution-space PDE-Dirichlet benchmarks, bin-conditioned federated gradient
-  correction (SB-CFO), numerical operator datasets, recorded seed-level results,
+  correction (SB-CFO), numerical operator datasets,
   and reproducible analysis for seven controlled and public simulation tasks.
 authors:
   - family-names: "Luo"
@@ -21,6 +18,9 @@ authors:
     affiliation: "PDL Lab, College of Computer Science and Technology, National University of Defense Technology"
   - family-names: "Wen"
     given-names: "Ziqing"
+    affiliation: "PDL Lab, College of Computer Science and Technology, National University of Defense Technology"
+  - family-names: "Xu"
+    given-names: "Kele"
     affiliation: "PDL Lab, College of Computer Science and Technology, National University of Defense Technology"
   - family-names: "Sun"
     given-names: "Tao"

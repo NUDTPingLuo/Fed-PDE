@@ -1,4 +1,4 @@
-"""Plot matched Burgers responses and errors across viscosities."""
+"""Plot Burgers responses and prediction errors across viscosities."""
 import hashlib
 import json
 from pathlib import Path

@@ -1,4 +1,4 @@
-"""Plot paired FedAvg/SB-CFO results and resource costs."""
+"""Plot FedAvg/SB-CFO results and resource costs."""
 from __future__ import annotations
 
 import argparse

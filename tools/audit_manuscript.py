@@ -36,19 +36,34 @@ def theory_checks():
             se = values.std(ddof=1)/np.sqrt(replicates)
             assert abs(values.mean()-exact) < 6*se, (name, alpha)
             checks.append(dict(check=name, alpha=alpha, empirical=float(values.mean()), exact=float(exact), monte_carlo_se=float(se)))
-    for _ in range(1000):
-        R = rng.dirichlet(np.ones(K)*20, size=len(pi)).T
+    wide_mass_cases = 0
+    for trial in range(1000):
+        concentration = (20., 1., .1, .02)[trial % 4]
+        R = rng.dirichlet(np.ones(K)*concentration, size=len(pi)).T
         u = K*R*pi
         s = u.sum(axis=1)
+        # The lemma concerns nonempty clients; guard floating-point underflow.
+        while s.min() <= 0:
+            R = rng.dirichlet(np.ones(K)*concentration, size=len(pi)).T
+            u = K*R*pi
+            s = u.sum(axis=1)
         delta = max(abs(s-1))
-        assert delta < 1
+        rho = np.sqrt(np.mean((s-1)**2))
         q, p = u/s[:, None], s/K
         Hu = np.mean(np.sum((u-pi)**2, axis=1))
         Hq = np.sum(p*np.sum((q-pi)**2, axis=1))
-        lo = max(np.sqrt(Hu)-delta*np.linalg.norm(pi), 0)**2/(1+delta)
-        hi = (np.sqrt(Hu)+delta*np.linalg.norm(pi))**2/(1-delta)
+        lo = max(np.sqrt(Hu)-rho*np.linalg.norm(pi), 0)**2/s.max()
+        hi = (np.sqrt(Hu)+rho*np.linalg.norm(pi))**2/s.min()
         assert lo-1e-12 <= Hq <= hi+1e-12
-    checks.append(dict(check="mass_normalization_sandwich", trials=1000, passed=True))
+        if delta < 1:
+            old_lo = max(np.sqrt(Hu)-delta*np.linalg.norm(pi), 0)**2/(1+delta)
+            old_hi = (np.sqrt(Hu)+delta*np.linalg.norm(pi))**2/(1-delta)
+            assert old_lo <= lo+1e-12 and hi <= old_hi+1e-12
+        else:
+            wide_mass_cases += 1
+    assert wide_mass_cases > 0
+    checks.append(dict(check="mass_normalization_sandwich", trials=1000,
+                       outside_old_delta_condition=wide_mass_cases, passed=True))
     checks.extend(adam_checks())
     return checks
 

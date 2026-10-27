@@ -1,4 +1,4 @@
-"""Reconstruct controlled training samples using the recorded seeds and solver batches."""
+"""Generate controlled training examples from the configured numerical solvers."""
 import argparse
 import hashlib
 import json
@@ -151,8 +151,9 @@ def main():
     fig = plt.figure(figsize=(3*WIDTH*MM, HEIGHT*MM))
     axes = [draw_panel(fig, sample, i, 3) for i, sample in enumerate(examples)]
     from util.paper_figure_style import require_basic_alignment
-    require_basic_alignment(fig, axes, output / 'qa' / 'overview.alignment.json',
-                            alignment_options={'row_groups': [['a', 'b', 'c']]})
+    for label, axis in zip('abc', axes):
+        axis.set_gid(label)
+    require_basic_alignment(fig, axes, output / 'qa' / 'overview.alignment.json')
     export(fig, output / 'overview')
     provenance = dict(
         selection='Fixed index chosen before viewing; one example per training pool.',

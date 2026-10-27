@@ -1,4 +1,4 @@
-"""Plot styling, export and layout checks."""
+"""Plot styling, fixed-size export and portable layout checks."""
 from __future__ import annotations
 
 import json
@@ -73,7 +73,7 @@ def alpha_legend(fig, alphas, *, iid: bool = False, markers_only: bool = False) 
         handles.append(Line2D([], [], color=IID_COLOR, marker="o", markerfacecolor="white", label="Stratified IID"))
     handles.extend(Line2D([], [], color=ALPHA_COLORS[a], marker=ALPHA_MARKERS[a],
                           linestyle="none" if markers_only else ALPHA_LINES[a],
-                          markerfacecolor="white", markersize=4, label=f"伪 = {a:g}") for a in alphas)
+                          markerfacecolor="white", markersize=4, label=f"α = {a:g}") for a in alphas)
     fig.legend(handles=handles, loc="upper center", bbox_to_anchor=(0.54, 0.997), ncol=len(handles),
                frameon=False, columnspacing=1.5, handlelength=1.8, handletextpad=0.45)
 

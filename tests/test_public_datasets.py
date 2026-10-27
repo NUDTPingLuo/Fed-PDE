@@ -5,10 +5,24 @@ from pathlib import Path
 
 import numpy as np
 
-from real_world.datasets import load_public_dataset
+from real_world.datasets import _cylinder_mask, load_public_dataset
 
 
 class PublicDatasetAdapterTests(unittest.TestCase):
+    def test_cylinder_mask_aligns_x_with_columns_on_rectangular_grid(self):
+        mask = _cylinder_mask(dict(
+            x_min=-2.0, x_max=2.0, y_min=-1.0, y_max=1.0,
+            radius=1.0), height=3, width=5)
+        # At y=0 the circle spans x=-1,0,1; at y=+/-1 only x=0
+        # lies on its boundary. Rows and columns have different lengths.
+        expected = np.array([
+            [0, 0, 1, 0, 0],
+            [0, 1, 1, 1, 0],
+            [0, 0, 1, 0, 0],
+        ], dtype=np.float32)
+        np.testing.assert_array_equal(mask, expected)
+        self.assertEqual(mask.dtype, np.float32)
+
     def test_cfdbench_cases_become_conditioned_multihorizon_windows(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory) / 'cylinder'

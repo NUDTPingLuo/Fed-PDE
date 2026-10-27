@@ -1,4 +1,4 @@
-"""Plot benchmark results, paired effects and diagnostics."""
+"""Plot benchmark learning curves, paired effects and diagnostics."""
 from __future__ import annotations
 
 import argparse
