@@ -1,7 +1,7 @@
 # Fed-PDE
 
-Solution-space Dirichlet partitioning, FedAvg and SB-CFO for seven controlled
-and public PDE-learning tasks.
+Code and recorded results for solution-space Dirichlet partitioning, FedAvg
+and SB-CFO across seven controlled and public PDE-learning tasks.
 
 ## Install
 
@@ -27,8 +27,8 @@ python sb_cfo_main.py --task all --device cuda:0
 
 Configurations are in `config/`. Add `--dry-run` to inspect a plan or `--smoke`
 for a small integration run. Use `--device cpu` for CPU execution.
-Results are generated under `results/` and are not tracked in this source-only
-branch. Completed matching runs are skipped; controlled/public runners accept
+The latest formal results are included in `results/`, with field definitions
+and checksums in [results/README.md](results/README.md). Completed matching runs are skipped; controlled/public runners accept
 `--force` to overwrite them. For SB-CFO experiments with changed settings or
 source/runtime fingerprints, choose a new `--output-dir`.
 
@@ -41,7 +41,8 @@ python real_world_main.py --task cfd_cylinder --device cuda:0 --force
 
 ## Analyze and plot
 
-After generating the experiment results and preparing the public datasets:
+The bundled results allow analysis without retraining. Recreating the full
+figure set also requires the public datasets and controlled examples:
 
 ```bash
 python tools/audit_manuscript.py
@@ -67,6 +68,7 @@ python tools/check_notation_geometry.py
 - `operator_tasks/`, `real_world/`, `sb_cfo/`, `util/`: numerical solvers, data loaders and algorithms
 - `main.py`, `real_world_main.py`, `sb_cfo_main.py`: training entry points
 - `plot_*.py`, `tools/`, `tests/`: analysis, figures and verification
+- `results/`: completed CSV/JSON observations, metadata and checksums
 
 ## License and citation
 
@@ -76,4 +78,5 @@ Third-party data and dependencies retain their own licenses.
 The earlier v1.0 release, including its recorded results, remains archived at
 [DOI: 10.5281/zenodo.23662112](https://doi.org/10.5281/zenodo.23662112).
 That archive predates the cylinder correction. Cite the exact Git commit when
-using this updated source; a new version DOI has not yet been published.
+using this updated code and results. Version 1.1.0 is prepared for release;
+a new version DOI has not yet been published.

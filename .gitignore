@@ -9,7 +9,7 @@ Thumbs.db
 .env
 .env.*
 output/
-results/
+results/**/smoke/
 tmp/
 latex/
 *.zip
